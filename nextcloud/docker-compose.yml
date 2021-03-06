@@ -11,10 +11,10 @@ services:
     volumes:
       - $NC_PATH/db:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=
-      - MYSQL_PASSWORD=
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
+      - MYSQL_ROOT_PASSWORD=$DB_ROOT_PWD
+      - MYSQL_PASSWORD=$DB_PWD
+      - MYSQL_DATABASE=$DB_NAME
+      - MYSQL_USER=$DB_USER
 
   redis:
     image: redis:alpine
@@ -34,6 +34,9 @@ services:
       - $NC_PATH/themes:/var/www/html/themes
     environment:
       - MYSQL_HOST=db
+      - MYSQL_PASSWORD=$DB_PWD
+      - MYSQL_DATABASE=$DB_NAME
+      - MYSQL_USER=$DB_USER
 
   cron:
     image: nextcloud:fpm-alpine
