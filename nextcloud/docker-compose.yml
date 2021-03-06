@@ -46,7 +46,7 @@ services:
       - redis
 
   web:
-    build: ./nginx
+    build: ./web
     restart: always
     ports:
       - $EXPOSED_PORT:80
