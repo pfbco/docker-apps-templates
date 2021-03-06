@@ -1,0 +1,56 @@
+version: '3'
+
+volumes:
+  nextcloud:
+
+services:
+  db:
+    image: mariadb
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    volumes:
+      - $NC_PATH/db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_PASSWORD=
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+
+  redis:
+    image: redis:alpine
+    restart: always
+
+  app:
+    image: nextcloud:fpm-alpine
+    restart: always
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - nextcloud:/var/www/html
+      - $NC_PATH/config:/var/www/html/config
+      - $NC_PATH/data:/var/www/html/data
+      - $NC_PATH/custom_apps:/var/www/html/custom_apps
+      - $NC_PATH/themes:/var/www/html/themes
+    environment:
+      - MYSQL_HOST=db
+
+  cron:
+    image: nextcloud:fpm-alpine
+    restart: always
+    volumes:
+      - nextcloud:/var/www/html
+    entrypoint: /cron.sh
+    depends_on:
+      - db
+      - redis
+
+  web:
+    build: ./nginx
+    restart: always
+    ports:
+      - $EXPOSED_PORT:80
+    volumes:
+      - nextcloud:/var/www/html:ro
+    depends_on:
+      - app
