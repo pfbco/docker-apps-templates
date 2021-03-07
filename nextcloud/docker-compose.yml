@@ -15,6 +15,7 @@ services:
       - MYSQL_PASSWORD=$DB_PWD
       - MYSQL_DATABASE=$DB_NAME
       - MYSQL_USER=$DB_USER
+      - TZ=$NC_TIMEZONE
 
   redis:
     image: redis:alpine
@@ -33,10 +34,12 @@ services:
       - $NC_PATH/custom_apps:/var/www/html/custom_apps
       - $NC_PATH/themes:/var/www/html/themes
     environment:
+      - REDIS_HOST=redis
       - MYSQL_HOST=db
       - MYSQL_PASSWORD=$DB_PWD
       - MYSQL_DATABASE=$DB_NAME
       - MYSQL_USER=$DB_USER
+      - TZ=$NC_TIMEZONE
 
   cron:
     image: nextcloud:fpm-alpine
