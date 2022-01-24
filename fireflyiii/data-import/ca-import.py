@@ -17,10 +17,10 @@ config.read("config.ini")
 # Initialization
 server = config['SERVER']
 host = "{}://{}:{}".format(server['protocol'], server['host'], server['port'])
-f = open("../.token","r")
+f = open(".token","r")
 endpoint = "{}/api/v1/transactions".format(host)
 headers = {
-    "Authorization": "Bearer {}".format("".join(f.readlines()),
+    "Authorization": "Bearer {}".format("".join(f.readlines())),
     "Content-Type": "application/json",
     "Accept": "application/json"
 }
@@ -99,6 +99,12 @@ elif len(transactionsNotCreated) == len(transactionList):
 else:
     print("> Detected {} transactions to register ({} transactions are already registered).\n".format(len(transactionsNotCreated), len(transactionList) - len(transactionsNotCreated)))
 
+
+# Check user acceptance
+accept=input("Do you want to proceed with transation registration? [y/n]: ") 
+if accept.lower() != 'y':
+    print("> Transaction registration cancelled.\n") 
+    exit(0)
 
 
 # Prepare to create transactions 
